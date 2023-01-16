@@ -1,0 +1,7 @@
+# Configurations for DemoAPI.
+---
+demoapi_app:
+  version: "2023.0.0-demo"
+  port: 8000
+  host: "0.0.0.0"
+  log_level: info
