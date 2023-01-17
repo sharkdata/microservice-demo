@@ -26,14 +26,14 @@ class CodeManager(object):
         """ """
         return self.fields
 
-    def get_values_by_field(self):
+    def get_values_by_field(self, field):
         """ """
-        self.values_by_field
+        return self.values_by_field.get(field, [])
 
     def get_rows_by_key(self, field, value):
         """ """
         key = field + "+" + value
-        return self.row_by_key.get()
+        return self.row_by_key.get(key, {})
 
     def load_data(self, directory="", file_name="codes.txt"):
         """ """

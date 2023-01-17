@@ -1,0 +1,217 @@
+openapi: 3.0.2
+info:
+  title: Demo API for micro services - Codes
+  description: >-
+    This is a template application for micro services.
+
+
+    The example service used to handle translations of coded values is
+    implemented in a separate python module 'codes.py', and is then included in
+    the main app as 'codes_router'.
+
+
+    This demo application also includes a YAML based configuration file, and
+    round logging files are used for info and debug logging. 
+
+
+    Asyncio is used to run the python code in async mode.
+  version: 2023.0.0-demo
+paths:
+  /fields/:
+    get:
+      tags:
+        - Codes
+      summary: Get Fields
+      description: Returns a list of valid field names.
+      operationId: get_fields_fields__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fields'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+  /codes/{field}:
+    get:
+      tags:
+        - Codes
+      summary: Get Values
+      description: Returns a list of values for the specified field name.
+      operationId: get_values_codes__field__get
+      parameters:
+        - required: true
+          schema:
+            title: Field
+            type: string
+          name: field
+          in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Values'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /codes/{field}/{value}:
+    get:
+      tags:
+        - Codes
+      summary: Get Translations
+      description: Get all available translations.
+      operationId: get_translations_codes__field___value__get
+      parameters:
+        - required: true
+          schema:
+            title: Field
+            type: string
+          name: field
+          in: path
+        - required: true
+          schema:
+            title: Value
+            type: string
+          name: value
+          in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Translations'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /:
+    get:
+      summary: Web Page
+      description: >-
+        Main web page. Not needed for an API service,  but used as an example of
+        a Jinja2/Template generated web page.
+      operationId: web_page__get
+      responses:
+        '200':
+          description: Returns an html page.
+          content:
+            application/json:
+              schema: {}
+            text/html: {}
+components:
+  schemas:
+    Fields:
+      title: Fields
+      required:
+        - fields
+      type: object
+      properties:
+        fields:
+          title: Fields
+          type: array
+          items:
+            type: string
+    HTTPValidationError:
+      title: HTTPValidationError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+    ResponseMessage:
+      title: ResponseMessage
+      required:
+        - message
+      type: object
+      properties:
+        message:
+          title: Message
+          type: string
+    Translations:
+      title: Translations
+      required:
+        - field
+        - value
+        - code
+        - swedish
+        - english
+      type: object
+      properties:
+        field:
+          title: Field
+          type: string
+        value:
+          title: Value
+          type: string
+        code:
+          title: Code
+          type: string
+        swedish:
+          title: Swedish
+          type: string
+        english:
+          title: English
+          type: string
+    ValidationError:
+      title: ValidationError
+      required:
+        - loc
+        - msg
+        - type
+      type: object
+      properties:
+        loc:
+          title: Location
+          type: array
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+    Values:
+      title: Values
+      required:
+        - field
+        - values
+      type: object
+      properties:
+        field:
+          title: Field
+          type: string
+        values:
+          title: Values
+          type: array
+          items:
+            type: string

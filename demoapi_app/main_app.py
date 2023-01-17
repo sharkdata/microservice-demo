@@ -20,7 +20,13 @@ logger = logging.getLogger(demoapi_core.used_logger)
 
 app = fastapi.FastAPI(
     title="Demo API for micro services - Codes",
-    description="An example of a template application for micro services.",
+    description="This is a template application for micro services."
+    + "\n\nThe example service used to handle translations of coded values is "
+    + "implemented in a separate python module 'codes.py', and is then included "
+    + "in the main app as 'codes_router'."
+    + "\n\nThis demo application also includes a YAML based configuration file, "
+    + "and round logging files are used for info and debug logging. "
+    + "\n\nAsyncio is used to run the python code in async mode.",
     version=demoapi_core.__version__,
 )
 
@@ -47,8 +53,21 @@ async def shutdown_event():
     logger.debug("API called: shutdown.")
 
 
-@app.get("/")
-async def webpage(request: fastapi.Request):
+@app.get(
+    "/",
+    # tags=["Main app"],
+    description="Main web page. "
+    + "Not needed for an API service,  "
+    + "but used as an example of a Jinja2/Template generated web page.",
+    responses={
+        200: {
+            "content": {"text/html": {}},
+            "description": "Returns an html page.",
+        }
+    },
+
+)
+async def web_page(request: fastapi.Request):
     """ """
     try:
         logger.debug("API called: webpage.")
@@ -58,6 +77,7 @@ async def webpage(request: fastapi.Request):
                 "request": request,
                 "demoapi_version": demoapi_core.__version__,
             },
+            media_type="text/html",
         )
     except Exception as e:
         logger.debug("Exception: webpage: " + str(e))
